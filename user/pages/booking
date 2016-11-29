@@ -1,0 +1,48 @@
+<?php
+session_start();
+
+include "../../Koneksi_Php/koneksi.php";
+        
+$username   = $_POST['user'];
+$kode       = $_POST['kode'];
+$judul      = $_POST['judul'];
+$harga      = $_POST['harga'];
+$atas_nama  = $_POST['atas_nama'];
+$email      = $_POST['email'];
+$telepon    = $_POST['telepon'];
+
+$query = mysql_query ("INSERT INTO daftar_acara VALUES ('$username','$kode','$judul','$harga','$atas_nama','$email','$telepon','0')");
+
+
+    require_once("PHPmailer/class.phpmailer.php");
+    $sendmail = new PHPMailer();
+    $sendmail->setFrom('okk-official@esaunggul.ac.id','OKK OFFICIAL'); //email pengirim
+    $sendmail->addReplyTo('okk-official@esaunggul.ac.id','OKK OFFICIAL'); //email replay
+    $sendmail->addAddress("$email"); //email tujuan
+    $sendmail->Subject = 'KONFIRMASI ACARA'; //subjek email
+    $sendmail->Body="
+	Anda Telah melakukan Booking System dengan rincian :
+	Username : $username
+	Kode Acara : $kode
+	Harga Tiket : $atas_nama
+	Email : $email"; //isi pesan
+    $sendmail->isHTML(true);
+    if(!$sendmail->Send())
+    {
+        echo "Email gagal dikirim : " . $sendmail->ErrorInfo;
+    }
+    else
+    {
+        //echo "Email berhasil terkirim!";
+    }
+
+
+
+if (!$sendmail->Send() && !$query)
+{
+echo "Gagal Booking";
+}
+else{
+echo "<meta http-equiv='refresh' content='0; url=re-JoinUs.html'>";
+}
+?>
